@@ -1,0 +1,35 @@
+body {
+  font-family: sans-serif;
+}
+
+.container {
+  display: flex;
+}
+
+.controls {
+  width: 120px;
+  margin-right: 20px;
+}
+
+.controls div {
+  margin-bottom: 10px;
+}
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(8, 25px);
+  grid-gap: 2px;
+}
+
+.cell {
+  width: 25px;
+  height: 25px;
+  border: 1px solid #666;
+  text-align: center;
+  line-height: 25px;
+  user-select: none;
+}
+
+.flag::after {
+  content: '\2691';
+}
