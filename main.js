@@ -6,6 +6,7 @@ let bombsLeft = totalBombs;
 let board = [];
 let firstClick = true;
 let opened = 0;
+let gameEnded = false;
 
 function posToIndex(x, y) {
   return y * boardSize + x;
@@ -68,6 +69,7 @@ function showMessage(msg) {
 function gameOver(win) {
   clearInterval(timerInterval);
   timerInterval = null;
+  gameEnded = true;
   showMessage(win ? 'COMPLETE' : 'FAILURE');
   board.forEach(c => {
     if (c.bomb) c.element.textContent = 'B';
@@ -108,6 +110,7 @@ function openCell(index) {
 }
 
 function onLeftClick(e) {
+  if (gameEnded) return;
   const idx = Number(e.currentTarget.dataset.index);
   if (firstClick) {
     placeBombs(idx);
@@ -134,6 +137,7 @@ function placeFlag(cell) {
 
 function onRightClick(e) {
   e.preventDefault();
+  if (gameEnded) return;
   const idx = Number(e.currentTarget.dataset.index);
   placeFlag(board[idx]);
 }
@@ -161,6 +165,7 @@ function resetGame() {
   bombsLeft = totalBombs;
   firstClick = true;
   opened = 0;
+  gameEnded = false;
   document.getElementById('timer').textContent = '000';
   document.getElementById('bomb-counter').textContent = bombsLeft;
   showMessage('');
