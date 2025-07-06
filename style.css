@@ -25,17 +25,19 @@ body {
 }
 
 .game-area {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   background: #a5d6a7;
-  padding: 10px;
+  padding: 30px 10px 10px;
   gap: 5px;
 }
 
 .board {
   display: grid;
   grid-template-columns: repeat(10, 25px);
+  grid-template-rows: repeat(10, 25px);
   gap: 2px;
 }
 
@@ -47,6 +49,7 @@ body {
   line-height: 25px;
   user-select: none;
   background: #bbb;
+  box-sizing: border-box;
 }
 
 .open {
@@ -55,12 +58,19 @@ body {
 
 #reset {
   margin: 0;
+  position: absolute;
+  top: 8px;
+  left: 10px;
 }
 
 .message {
+  position: absolute;
+  top: 8px;
+  right: 10px;
   font-size: 20px;
   height: 24px;
   margin: 0;
+  text-align: right;
 }
 
 .flag::after {
