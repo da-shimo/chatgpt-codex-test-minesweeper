@@ -1,5 +1,6 @@
-const boardSize = 10;
-const totalBombs = 10;
+let boardWidth = 9;
+let boardHeight = 9;
+let totalBombs = 10;
 let timer = 0;
 let timerInterval = null;
 let bombsLeft = totalBombs;
@@ -7,6 +8,12 @@ let board = [];
 let firstClick = true;
 let opened = 0;
 let gameEnded = false;
+
+const levels = {
+  beginner: { w: 9, h: 9, bombs: 10 },
+  intermediate: { w: 16, h: 16, bombs: 40 },
+  advanced: { w: 30, h: 16, bombs: 99 }
+};
 
 const numberColors = {
   1: 'blue',
@@ -20,15 +27,15 @@ const numberColors = {
 };
 
 function posToIndex(x, y) {
-  return y * boardSize + x;
+  return y * boardWidth + x;
 }
 
 function indexToPos(i) {
-  return { x: i % boardSize, y: Math.floor(i / boardSize) };
+  return { x: i % boardWidth, y: Math.floor(i / boardWidth) };
 }
 
 function inBounds(x, y) {
-  return x >= 0 && x < boardSize && y >= 0 && y < boardSize;
+  return x >= 0 && x < boardWidth && y >= 0 && y < boardHeight;
 }
 
 function startTimer() {
@@ -46,7 +53,7 @@ function startTimer() {
 
 function placeBombs(exclude) {
   const spots = [];
-  for (let i = 0; i < boardSize * boardSize; i += 1) {
+  for (let i = 0; i < boardWidth * boardHeight; i += 1) {
     if (i !== exclude) spots.push(i);
   }
   for (let i = 0; i < totalBombs; i += 1) {
@@ -90,7 +97,7 @@ function gameOver(win, exploded) {
 }
 
 function checkWin() {
-  if (opened === boardSize * boardSize - totalBombs) {
+  if (opened === boardWidth * boardHeight - totalBombs) {
     gameOver(true);
   }
 }
@@ -158,9 +165,10 @@ function onRightClick(e) {
 function initBoard() {
   const boardElem = document.getElementById('board');
   boardElem.innerHTML = '';
-  boardElem.style.gridTemplateColumns = `repeat(${boardSize}, 25px)`;
+  boardElem.style.gridTemplateColumns = `repeat(${boardWidth}, 25px)`;
+  boardElem.style.gridTemplateRows = `repeat(${boardHeight}, 25px)`;
   board = [];
-  for (let i = 0; i < boardSize * boardSize; i += 1) {
+  for (let i = 0; i < boardWidth * boardHeight; i += 1) {
     const cellElem = document.createElement('div');
     cellElem.className = 'cell';
     cellElem.dataset.index = i;
@@ -169,6 +177,15 @@ function initBoard() {
     boardElem.appendChild(cellElem);
     board.push({ bomb: false, open: false, flag: false, number: 0, element: cellElem });
   }
+}
+
+function changeLevel(level) {
+  const cfg = levels[level];
+  if (!cfg) return;
+  boardWidth = cfg.w;
+  boardHeight = cfg.h;
+  totalBombs = cfg.bombs;
+  resetGame();
 }
 
 function resetGame() {
@@ -188,5 +205,8 @@ function resetGame() {
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('reset').addEventListener('click', resetGame);
   document.getElementById('bomb-counter').textContent = bombsLeft;
+  document.querySelectorAll('.level-select button').forEach(btn => {
+    btn.addEventListener('click', () => changeLevel(btn.dataset.level));
+  });
   initBoard();
 });
