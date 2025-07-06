@@ -77,7 +77,7 @@ body {
 .message {
   font-size: 20px;
   height: 24px;
-  margin: 0;
+  margin: 5px 0 0;
   text-align: center;
   width: 80px;
 }
