@@ -79,6 +79,13 @@ body {
   height: 24px;
   margin: 0;
   text-align: right;
+  width: 80px;
+}
+
+#bomb-counter {
+  display: inline-block;
+  width: 32px;
+  text-align: right;
 }
 
 .flag::after {
