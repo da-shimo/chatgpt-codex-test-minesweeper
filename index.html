@@ -7,13 +7,15 @@
 </head>
 <body>
   <div class="container">
-    <div class="controls">
-      <div id="timer">000</div>
-      <div id="bomb-counter">0</div>
-      <button id="reset">Reset</button>
+    <div class="status-bar">
+      <div class="bomb-info"><span class="icon">💣</span><span id="bomb-counter">0</span></div>
+      <div class="timer-info"><span class="icon">⏰</span><span id="timer">000</span></div>
     </div>
-    <div id="board" class="board"></div>
-    <div id="message" class="message"></div>
+    <div class="game-area">
+      <button id="reset" class="reset">Reset</button>
+      <div id="message" class="message"></div>
+      <div id="board" class="board"></div>
+    </div>
   </div>
   <script src="main.js"></script>
 </body>
