@@ -36,15 +36,22 @@ body {
 
 .top-bar {
   display: flex;
-  justify-content: space-between;
-  width: calc(25px * 10 + 2px * 9);
+  align-items: center;
+  gap: 10px;
+  width: fit-content;
   margin-bottom: 5px;
+}
+
+.level-select {
+  margin-left: auto;
+  display: flex;
+  gap: 5px;
 }
 
 .board {
   display: grid;
-  grid-template-columns: repeat(10, 25px);
-  grid-template-rows: repeat(10, 25px);
+  grid-template-columns: repeat(9, 25px);
+  grid-template-rows: repeat(9, 25px);
   gap: 2px;
 }
 
