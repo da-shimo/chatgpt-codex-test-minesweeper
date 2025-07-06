@@ -17,7 +17,7 @@ body {
 
 .board {
   display: grid;
-  grid-template-columns: repeat(8, 25px);
+  grid-template-columns: repeat(10, 25px);
   grid-gap: 2px;
 }
 
@@ -28,6 +28,16 @@ body {
   text-align: center;
   line-height: 25px;
   user-select: none;
+}
+
+.open {
+  background: #ddd;
+}
+
+.message {
+  margin-top: 10px;
+  font-size: 20px;
+  height: 24px;
 }
 
 .flag::after {

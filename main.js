@@ -1,10 +1,26 @@
-const boardSize = 8;
+const boardSize = 10;
 const totalBombs = 10;
 let timer = 0;
 let timerInterval = null;
 let bombsLeft = totalBombs;
+let board = [];
+let firstClick = true;
+let opened = 0;
+
+function posToIndex(x, y) {
+  return y * boardSize + x;
+}
+
+function indexToPos(i) {
+  return { x: i % boardSize, y: Math.floor(i / boardSize) };
+}
+
+function inBounds(x, y) {
+  return x >= 0 && x < boardSize && y >= 0 && y < boardSize;
+}
 
 function startTimer() {
+  if (timerInterval) return;
   timerInterval = setInterval(() => {
     if (timer >= 999) {
       document.getElementById('timer').textContent = '999';
@@ -12,49 +28,147 @@ function startTimer() {
       return;
     }
     timer += 1;
-    if (timer > 999) timer = 999;
     document.getElementById('timer').textContent = String(timer).padStart(3, '0');
   }, 1000);
 }
 
-function placeFlag(cell) {
-  if (!cell.classList.contains('flag')) {
-    cell.classList.add('flag');
-    bombsLeft = Math.max(0, bombsLeft - 1);
-    document.getElementById('bomb-counter').textContent = bombsLeft;
-  } else {
-    cell.classList.remove('flag');
+function placeBombs(exclude) {
+  const spots = [];
+  for (let i = 0; i < boardSize * boardSize; i += 1) {
+    if (i !== exclude) spots.push(i);
+  }
+  for (let i = 0; i < totalBombs; i += 1) {
+    const idx = Math.floor(Math.random() * spots.length);
+    const pos = spots.splice(idx, 1)[0];
+    board[pos].bomb = true;
   }
 }
 
+function calcNumbers() {
+  for (let i = 0; i < board.length; i += 1) {
+    if (board[i].bomb) continue;
+    const { x, y } = indexToPos(i);
+    let count = 0;
+    for (let dx = -1; dx <= 1; dx += 1) {
+      for (let dy = -1; dy <= 1; dy += 1) {
+        if (dx === 0 && dy === 0) continue;
+        const nx = x + dx;
+        const ny = y + dy;
+        if (inBounds(nx, ny) && board[posToIndex(nx, ny)].bomb) count += 1;
+      }
+    }
+    board[i].number = count;
+  }
+}
+
+function showMessage(msg) {
+  document.getElementById('message').textContent = msg;
+}
+
+function gameOver(win) {
+  clearInterval(timerInterval);
+  timerInterval = null;
+  showMessage(win ? 'COMPLETE' : 'FAILURE');
+  board.forEach(c => {
+    if (c.bomb) c.element.textContent = 'B';
+  });
+}
+
+function checkWin() {
+  if (opened === boardSize * boardSize - totalBombs) {
+    gameOver(true);
+  }
+}
+
+function openCell(index) {
+  const cell = board[index];
+  if (cell.open || cell.flag) return;
+  cell.open = true;
+  cell.element.classList.add('open');
+  opened += 1;
+  if (cell.bomb) {
+    cell.element.textContent = 'B';
+    gameOver(false);
+    return;
+  }
+  if (cell.number > 0) {
+    cell.element.textContent = cell.number;
+  } else {
+    const { x, y } = indexToPos(index);
+    for (let dx = -1; dx <= 1; dx += 1) {
+      for (let dy = -1; dy <= 1; dy += 1) {
+        if (dx === 0 && dy === 0) continue;
+        const nx = x + dx;
+        const ny = y + dy;
+        if (inBounds(nx, ny)) openCell(posToIndex(nx, ny));
+      }
+    }
+  }
+  checkWin();
+}
+
+function onLeftClick(e) {
+  const idx = Number(e.currentTarget.dataset.index);
+  if (firstClick) {
+    placeBombs(idx);
+    calcNumbers();
+    startTimer();
+    firstClick = false;
+  }
+  openCell(idx);
+}
+
+function placeFlag(cell) {
+  if (cell.open) return;
+  if (!cell.flag) {
+    cell.flag = true;
+    cell.element.classList.add('flag');
+    bombsLeft = Math.max(0, bombsLeft - 1);
+  } else {
+    cell.flag = false;
+    cell.element.classList.remove('flag');
+    bombsLeft = Math.min(totalBombs, bombsLeft + 1);
+  }
+  document.getElementById('bomb-counter').textContent = bombsLeft;
+}
+
+function onRightClick(e) {
+  e.preventDefault();
+  const idx = Number(e.currentTarget.dataset.index);
+  placeFlag(board[idx]);
+}
+
 function initBoard() {
-  const board = document.getElementById('board');
+  const boardElem = document.getElementById('board');
+  boardElem.innerHTML = '';
+  boardElem.style.gridTemplateColumns = `repeat(${boardSize}, 25px)`;
+  board = [];
   for (let i = 0; i < boardSize * boardSize; i += 1) {
-    const cell = document.createElement('div');
-    cell.className = 'cell';
-    cell.addEventListener('contextmenu', (e) => {
-      e.preventDefault();
-      placeFlag(cell);
-    });
-    board.appendChild(cell);
+    const cellElem = document.createElement('div');
+    cellElem.className = 'cell';
+    cellElem.dataset.index = i;
+    cellElem.addEventListener('click', onLeftClick);
+    cellElem.addEventListener('contextmenu', onRightClick);
+    boardElem.appendChild(cellElem);
+    board.push({ bomb: false, open: false, flag: false, number: 0, element: cellElem });
   }
 }
 
 function resetGame() {
   clearInterval(timerInterval);
+  timerInterval = null;
   timer = 0;
-  document.getElementById('timer').textContent = '000';
   bombsLeft = totalBombs;
+  firstClick = true;
+  opened = 0;
+  document.getElementById('timer').textContent = '000';
   document.getElementById('bomb-counter').textContent = bombsLeft;
-  const board = document.getElementById('board');
-  board.innerHTML = '';
+  showMessage('');
   initBoard();
-  startTimer();
 }
 
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('reset').addEventListener('click', resetGame);
   document.getElementById('bomb-counter').textContent = bombsLeft;
   initBoard();
-  startTimer();
 });
