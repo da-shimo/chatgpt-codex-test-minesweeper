@@ -37,7 +37,7 @@ body {
 .top-bar {
   display: flex;
   justify-content: space-between;
-  width: 100%;
+  width: calc(25px * 10 + 2px * 9);
   margin-bottom: 5px;
 }
 
