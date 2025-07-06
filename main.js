@@ -8,6 +8,17 @@ let firstClick = true;
 let opened = 0;
 let gameEnded = false;
 
+const numberColors = {
+  1: 'blue',
+  2: 'green',
+  3: 'red',
+  4: 'purple',
+  5: 'maroon',
+  6: 'teal',
+  7: 'brown',
+  8: 'gray'
+};
+
 function posToIndex(x, y) {
   return y * boardSize + x;
 }
@@ -66,13 +77,15 @@ function showMessage(msg) {
   document.getElementById('message').textContent = msg;
 }
 
-function gameOver(win) {
+function gameOver(win, exploded) {
   clearInterval(timerInterval);
   timerInterval = null;
   gameEnded = true;
   showMessage(win ? 'COMPLETE' : 'FAILURE');
-  board.forEach(c => {
-    if (c.bomb) c.element.textContent = 'B';
+  board.forEach((c, i) => {
+    if (c.bomb) {
+      c.element.textContent = i === exploded ? '💥' : '💣';
+    }
   });
 }
 
@@ -89,12 +102,12 @@ function openCell(index) {
   cell.element.classList.add('open');
   opened += 1;
   if (cell.bomb) {
-    cell.element.textContent = 'B';
-    gameOver(false);
+    gameOver(false, index);
     return;
   }
   if (cell.number > 0) {
     cell.element.textContent = cell.number;
+    cell.element.style.color = numberColors[cell.number];
   } else {
     const { x, y } = indexToPos(index);
     for (let dx = -1; dx <= 1; dx += 1) {
