@@ -77,13 +77,15 @@ function showMessage(msg) {
   document.getElementById('message').textContent = msg;
 }
 
-function gameOver(win) {
+function gameOver(win, exploded) {
   clearInterval(timerInterval);
   timerInterval = null;
   gameEnded = true;
   showMessage(win ? 'COMPLETE' : 'FAILURE');
-  board.forEach(c => {
-    if (c.bomb) c.element.textContent = '💣';
+  board.forEach((c, i) => {
+    if (c.bomb) {
+      c.element.textContent = i === exploded ? '💥' : '💣';
+    }
   });
 }
 
@@ -100,8 +102,7 @@ function openCell(index) {
   cell.element.classList.add('open');
   opened += 1;
   if (cell.bomb) {
-    cell.element.textContent = '💣';
-    gameOver(false);
+    gameOver(false, index);
     return;
   }
   if (cell.number > 0) {
