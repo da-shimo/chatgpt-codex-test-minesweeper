@@ -1,3 +1,4 @@
+/* ページ全体のレイアウト */
 body {
   font-family: sans-serif;
   display: flex;
@@ -8,22 +9,26 @@ body {
   margin: 0;
 }
 
+/* すべてを中央に配置 */
 .container {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
+/* 爆弾カウンターとタイマー */
 .status-bar {
   display: flex;
   gap: 20px;
   margin-bottom: 10px;
 }
 
+/* アイコン横の余白 */
 .icon {
   margin-right: 4px;
 }
 
+/* 盤面のラッパー */
 .game-area {
   display: flex;
   flex-direction: column;
@@ -34,6 +39,7 @@ body {
   width: fit-content;
 }
 
+/* リセットボタンと難易度選択 */
 .top-bar {
   display: flex;
   align-items: center;
@@ -42,12 +48,14 @@ body {
   margin-bottom: 5px;
 }
 
+/* 難易度ボタン */
 .level-select {
   margin-left: auto;
   display: flex;
   gap: 5px;
 }
 
+/* 盤面のグリッド */
 .board {
   display: grid;
   grid-template-columns: repeat(9, 25px);
@@ -55,6 +63,7 @@ body {
   gap: 2px;
 }
 
+/* マス1つ分のスタイル */
 .cell {
   width: 25px;
   height: 25px;
@@ -66,14 +75,17 @@ body {
   box-sizing: border-box;
 }
 
+/* 開いたマス */
 .open {
   background: #ddd;
 }
 
+/* ボタンのデフォルト余白を除去 */
 #reset {
   margin: 0;
 }
 
+/* 成功・失敗メッセージ */
 .message {
   font-size: 20px;
   height: 24px;
@@ -82,12 +94,14 @@ body {
   width: 80px;
 }
 
+/* カウンターの数字を右寄せ */
 #bomb-counter {
   display: inline-block;
   width: 32px;
   text-align: right;
 }
 
+/* フラグ表示 */
 .flag::after {
   content: '\2691';
 }

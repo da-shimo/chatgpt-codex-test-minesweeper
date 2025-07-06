@@ -3,14 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <title>Minesweeper</title>
+  <!-- ゲームのスタイル -->
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <!-- メインコンテナ -->
   <div class="container">
+    <!-- 残り爆弾数とタイマーを表示 -->
     <div class="status-bar">
       <div class="bomb-info"><span class="icon">💣</span><span id="bomb-counter">0</span></div>
       <div class="timer-info"><span class="icon">⏰</span><span id="timer">000</span></div>
     </div>
+    <!-- リセットボタンと難易度選択 -->
     <div class="top-bar">
       <button id="reset" class="reset">Reset</button>
       <div class="level-select">
@@ -19,11 +23,14 @@
         <button data-level="advanced">上級</button>
       </div>
     </div>
+    <!-- ゲーム盤 -->
     <div class="game-area">
       <div id="board" class="board"></div>
     </div>
+    <!-- 勝敗メッセージ -->
     <div id="message" class="message"></div>
   </div>
+  <!-- ゲームロジック -->
   <script src="main.js"></script>
 </body>
 </html>
